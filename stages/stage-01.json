@@ -1,14 +1,148 @@
 {
-  "playerStart": { "x": 2, "y": 0 },
+  "showGrid": false,
+  "playerStart": { "x": 0, "y": 7 
+ },
+  "blocks": [
+    {
+      "id": "single",
+      "origin": { "x": 1, "y": 0 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF",
+      "content": {
+        "type": "text",
+        "text": "1",
+        "position": { "x": 0.5, "y": 0.5, "anchor": "center" },
+        "size": { "width": 0.7, "height": 0.7, "unit": "ratio" },
+        "font": {
+          "family": "\"Segoe UI\", sans-serif",
+          "size": 0.6,
+          "sizeUnit": "ratio",
+          "weight": 800,
+          "color": "#FF0000"
+        }
+      }
+    },
+    {
+      "id": "single",
+      "origin": { "x": 2, "y": 0 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF",
+      "content": {
+        "type": "text",
+        "text": "2",
+        "position": { "x": 0.5, "y": 0.5, "anchor": "center" },
+        "size": { "width": 0.7, "height": 0.7, "unit": "ratio" },
+        "font": {
+          "family": "\"Segoe UI\", sans-serif",
+          "size": 0.6,
+          "sizeUnit": "ratio",
+          "weight": 800,
+          "color": "#111111"
+        }
+      }
+    },
+    {
+      "id": "bar",
+      "origin": { "x": 3, "y": 0 },
+      "cells": [[0, 0], [1, 0]],
+      "color": "#FFFFFF",
+            "content": {
+        "type": "text",
+        "text": "→",
+        "position": { "x": 0.5, "y": 0.45, "anchor": "center" },
+        "size": { "width": 0.7, "height": 0.7, "unit": "ratio" },
+        "font": {
+          "family": "\"Segoe UI\", sans-serif",
+          "size": 0.6,
+          "sizeUnit": "ratio",
+          "weight": 800,
+          "color": "#111111"
+        }
+      }
+    },
+
+    {
+      "id": "single",
+      "origin": { "x": 5, "y": 0 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF",
+      "content": {
+        "type": "text",
+        "text": "明",
+        "position": { "x": 0.5, "y": 0.5, "anchor": "center" },
+        "size": { "width": 0.7, "height": 0.7, "unit": "ratio" },
+        "font": {
+          "family": "\"Segoe UI\", sans-serif",
+          "size": 0.6,
+          "sizeUnit": "ratio",
+          "weight": 800,
+          "color": "#111111"
+        }
+      }
+    },
+    {
+      "id": "single",
+      "origin": { "x": 1, "y": 2 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF"
+    },
+    {
+      "id": "single",
+      "origin": { "x": 2, "y": 2 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF"
+    },
+    {
+      "id": "bar",
+      "origin": { "x": 3, "y": 2 },
+      "cells": [[0, 0], [1, 0]],
+      "color": "#FFFFFF"
+    },
+    {
+      "id": "single",
+      "origin": { "x": 5, "y": 2 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF"
+    },
+{
+      "id": "bar",
+      "origin": { "x": 0, "y": 3 },
+      "cells": [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0]],
+      "color": "#FFFFFF"
+    },
+    {
+      "id": "single",
+      "origin": { "x": 1, "y": 4 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF"
+    },
+    {
+      "id": "single",
+      "origin": { "x": 3, "y": 5 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF"
+    },
+    {
+      "id": "bar",
+      "origin": { "x": 3, "y": 4 },
+      "cells": [[0, 0], [1, 0]],
+      "color": "#FFFFFF"
+    },
+    {
+      "id": "single",
+      "origin": { "x": 5, "y": 4 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF"
+    }
+  ],
   "grid": [
-    "..####.",
-    ".##..#.",
-    "##..###",
-    "##..###",
-    "##..###",
-    "##..###",
-    "##..###",
-    ".##..#.",
-    "..###.."
+    "#######",
+    "#######",
+    "#######",
+    "#######",
+    "#######",
+    "#######",
+    "#######",
+    "#######"
   ]
 }
