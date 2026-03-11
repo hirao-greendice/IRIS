@@ -1,0 +1,13 @@
+    {
+      "id": "single",
+      "origin": { "x": 5, "y": 0 },
+      "cells": [[0, 0]],
+      "color": "#FFFFFF",
+      "content": {
+        "type": "image",
+        "src": "./assets/block-badge.svg",
+        "position": { "x": 0.5, "y": 0.5, "anchor": "center" },
+        "size": { "width": 0.72, "height": 0.72, "unit": "ratio" },
+        "fit": "contain"
+      }
+    },

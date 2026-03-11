@@ -1,11 +1,14 @@
 const STAGE_URL = "./stages/stage-01.json";
-const FLOOR_SYMBOL = "#";
-const EMPTY_SYMBOL = ".";
-const BLOCK_SCALE = 0.9;
+const DEFAULT_TILE_TYPES = {
+  "#": { kind: "floor", color: "#000000" },
+  R: { kind: "floor", color: "#c81e1e" },
+  ".": { kind: "empty" },
+};
+const BLOCK_SCALE = 0.95;
 const INNER_LINE_WIDTH = 1;
 const OUTER_LINE_WIDTH = 4;
 const BOARD_PADDING = OUTER_LINE_WIDTH;
-const PLAYER_SCALE = 0.8;
+const PLAYER_SCALE = 0.95;
 const SWIPE_THRESHOLD = 24;
 const SVG_NS = "http://www.w3.org/2000/svg";
 const stageAreaElement = document.getElementById("stage-area");
@@ -42,15 +45,22 @@ function parseStage(stageData) {
     throw new Error("Stage JSON must include a non-empty grid array.");
   }
 
+  const tileTypes = parseTileTypes(stageData.tileTypes);
   const rows = stageData.grid.length;
   const cols = Math.max(...stageData.grid.map((row) => row.length));
   const floorCells = [];
   const floorSet = new Set();
 
-  stageData.grid.map((row) => row.padEnd(cols, EMPTY_SYMBOL)).forEach((row, y) => {
-    Array.from(row).forEach((cell, x) => {
-      if (cell === FLOOR_SYMBOL) {
-        floorCells.push({ x, y });
+  stageData.grid.map((row) => row.padEnd(cols, ".")).forEach((row, y) => {
+    Array.from(row).forEach((symbol, x) => {
+      const tileType = tileTypes[symbol];
+
+      if (!tileType) {
+        throw new Error(`Unknown grid symbol "${symbol}" at ${x},${y}.`);
+      }
+
+      if (tileType.kind === "floor") {
+        floorCells.push({ x, y, color: tileType.color });
         floorSet.add(keyForCell(x, y));
       }
     });
@@ -76,6 +86,43 @@ function parseStage(stageData) {
     playerStart,
     initialBlocks,
   };
+}
+
+function parseTileTypes(tileTypeConfig) {
+  const tileTypes = Object.fromEntries(
+    Object.entries(DEFAULT_TILE_TYPES).map(([symbol, tileType]) => [symbol, { ...tileType }]),
+  );
+
+  if (tileTypeConfig == null) {
+    return tileTypes;
+  }
+
+  if (typeof tileTypeConfig !== "object" || Array.isArray(tileTypeConfig)) {
+    throw new Error("Stage JSON tileTypes must be an object.");
+  }
+
+  Object.entries(tileTypeConfig).forEach(([symbol, tileType]) => {
+    if (symbol.length !== 1) {
+      throw new Error(`Tile type symbol "${symbol}" must be exactly one character.`);
+    }
+
+    if (!tileType || typeof tileType !== "object" || Array.isArray(tileType)) {
+      throw new Error(`Tile type "${symbol}" must be an object.`);
+    }
+
+    if (tileType.kind !== "floor" && tileType.kind !== "empty") {
+      throw new Error(`Tile type "${symbol}" kind must be "floor" or "empty".`);
+    }
+
+    tileTypes[symbol] = {
+      kind: tileType.kind,
+      color: tileType.kind === "floor"
+        ? (typeof tileType.color === "string" ? tileType.color : tileTypes[symbol]?.color ?? "#000000")
+        : null,
+    };
+  });
+
+  return tileTypes;
 }
 
 function parsePlayerStart(playerStart, floorSet, fallbackCell) {
@@ -274,6 +321,7 @@ function createTile(cell, cellSize) {
   tile.style.top = `${BOARD_PADDING + cell.y * cellSize}px`;
   tile.style.width = `${cellSize}px`;
   tile.style.height = `${cellSize}px`;
+  tile.style.backgroundColor = cell.color;
   return tile;
 }
 
@@ -321,7 +369,7 @@ function createPlayer(cellSize) {
 
 function createBlockElement(block, cellSize) {
   const inset = Math.round(cellSize * (1 - BLOCK_SCALE) / 2);
-  const radius = Math.max(2, Math.min(inset, Math.round(cellSize * 0.14)));
+  const radius = Math.max(15, Math.min(inset, Math.round(cellSize * 0.9)));
   const xs = block.cells.map((cell) => cell.x);
   const ys = block.cells.map((cell) => cell.y);
   const minX = Math.min(...xs);
