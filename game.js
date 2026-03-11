@@ -4,10 +4,15 @@ const EMPTY_SYMBOL = ".";
 const INNER_LINE_WIDTH = 1;
 const OUTER_LINE_WIDTH = 4;
 const BOARD_PADDING = OUTER_LINE_WIDTH;
+const PLAYER_SCALE = 0.80;
 const stageAreaElement = document.getElementById("stage-area");
 const stageBoardElement = document.getElementById("stage-board");
+const controlElements = Array.from(document.querySelectorAll("[data-move]"));
 
 let currentStage = null;
+let currentPlayer = null;
+let currentCellSize = 0;
+let playerElement = null;
 
 function keyForCell(x, y) {
   return `${x},${y}`;
@@ -36,12 +41,28 @@ function parseStage(stageData) {
     throw new Error("Stage JSON does not contain any floor cells.");
   }
 
+  const playerStart = parsePlayerStart(stageData.playerStart, floorSet, floorCells[0]);
+
   return {
     rows,
     cols,
     floorCells,
     floorSet,
+    playerStart,
   };
+}
+
+function parsePlayerStart(playerStart, floorSet, fallbackCell) {
+  if (
+    playerStart
+    && Number.isInteger(playerStart.x)
+    && Number.isInteger(playerStart.y)
+    && floorSet.has(keyForCell(playerStart.x, playerStart.y))
+  ) {
+    return { x: playerStart.x, y: playerStart.y };
+  }
+
+  return { x: fallbackCell.x, y: fallbackCell.y };
 }
 
 function hasFloor(stage, x, y) {
@@ -80,6 +101,26 @@ function createLine(x, y, width, height) {
   line.style.width = `${width}px`;
   line.style.height = `${height}px`;
   return line;
+}
+
+function createPlayer(cellSize) {
+  const player = document.createElement("div");
+  player.className = "stage-player";
+  updatePlayerPosition(player, cellSize);
+  return player;
+}
+
+function updatePlayerPosition(player, cellSize) {
+  if (!currentPlayer) {
+    return;
+  }
+
+  const playerSize = Math.max(4, Math.floor(cellSize * PLAYER_SCALE));
+  const offset = Math.floor((cellSize - playerSize) / 2);
+  player.style.left = `${BOARD_PADDING + currentPlayer.x * cellSize + offset}px`;
+  player.style.top = `${BOARD_PADDING + currentPlayer.y * cellSize + offset}px`;
+  player.style.width = `${playerSize}px`;
+  player.style.height = `${playerSize}px`;
 }
 
 function createLinesForCell(stage, cell, cellSize) {
@@ -191,10 +232,83 @@ function renderStage() {
   const boardHeight = cellSize * currentStage.rows + BOARD_PADDING * 2;
   const tiles = currentStage.floorCells.map((cell) => createTile(cell, cellSize));
   const lines = currentStage.floorCells.flatMap((cell) => createLinesForCell(currentStage, cell, cellSize));
+  currentCellSize = cellSize;
+  playerElement = createPlayer(cellSize);
 
   stageBoardElement.style.width = `${boardWidth}px`;
   stageBoardElement.style.height = `${boardHeight}px`;
-  stageBoardElement.replaceChildren(...tiles, ...lines);
+  stageBoardElement.replaceChildren(...tiles, ...lines, playerElement);
+}
+
+function movePlayer(dx, dy) {
+  if (!currentStage || !currentPlayer) {
+    return;
+  }
+
+  const nextX = currentPlayer.x + dx;
+  const nextY = currentPlayer.y + dy;
+
+  if (!hasFloor(currentStage, nextX, nextY)) {
+    return;
+  }
+
+  currentPlayer = { x: nextX, y: nextY };
+
+  if (playerElement) {
+    updatePlayerPosition(playerElement, currentCellSize);
+  }
+}
+
+function handleMove(direction) {
+  if (direction === "up") {
+    movePlayer(0, -1);
+  }
+
+  if (direction === "right") {
+    movePlayer(1, 0);
+  }
+
+  if (direction === "down") {
+    movePlayer(0, 1);
+  }
+
+  if (direction === "left") {
+    movePlayer(-1, 0);
+  }
+}
+
+function handleKeydown(event) {
+  const key = event.key.toLowerCase();
+
+  if (key === "arrowup" || key === "w") {
+    event.preventDefault();
+    handleMove("up");
+  }
+
+  if (key === "arrowright" || key === "d") {
+    event.preventDefault();
+    handleMove("right");
+  }
+
+  if (key === "arrowdown" || key === "s") {
+    event.preventDefault();
+    handleMove("down");
+  }
+
+  if (key === "arrowleft" || key === "a") {
+    event.preventDefault();
+    handleMove("left");
+  }
+}
+
+function bindControls() {
+  window.addEventListener("keydown", handleKeydown);
+
+  controlElements.forEach((controlElement) => {
+    controlElement.addEventListener("click", () => {
+      handleMove(controlElement.dataset.move);
+    });
+  });
 }
 
 async function loadStage() {
@@ -211,7 +325,9 @@ async function bootstrap() {
   try {
     const stageData = await loadStage();
     currentStage = parseStage(stageData);
+    currentPlayer = { ...currentStage.playerStart };
     renderStage();
+    bindControls();
 
     const resizeObserver = new ResizeObserver(() => {
       renderStage();

@@ -25,6 +25,8 @@ body {
 .game-shell {
   width: min(calc(100vw - 24px), calc((100vh - 24px) * 3 / 4));
   aspect-ratio: 3 / 4;
+  display: grid;
+  grid-template-rows: 1fr auto;
   background: var(--shell-bg);
   overflow: hidden;
 }
@@ -54,6 +56,55 @@ body {
   pointer-events: none;
 }
 
+.stage-player {
+  position: absolute;
+  background: #04fdd4;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas:
+    ". up ."
+    "left down right";
+  gap: 8px;
+  padding: 0 14px 14px;
+}
+
+.control-button {
+  min-height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #1c2230;
+  color: #ffffff;
+  font: inherit;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.control-button:active {
+  background: #2a3347;
+}
+
+.control-button--up {
+  grid-area: up;
+}
+
+.control-button--left {
+  grid-area: left;
+}
+
+.control-button--down {
+  grid-area: down;
+}
+
+.control-button--right {
+  grid-area: right;
+}
+
 @media (max-width: 560px) {
   body {
     padding: 8px;
@@ -61,5 +112,9 @@ body {
 
   .game-shell {
     width: min(calc(100vw - 16px), calc((100vh - 16px) * 3 / 4));
+  }
+
+  .controls {
+    padding: 0 10px 10px;
   }
 }
