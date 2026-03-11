@@ -22,12 +22,6 @@ body {
   background: var(--page-bg);
 }
 
-.app {
-  width: 100%;
-  display: grid;
-  place-items: center;
-}
-
 .game-shell {
   width: min(calc(100vw - 24px), calc((100vh - 24px) * 3 / 4));
   aspect-ratio: 3 / 4;

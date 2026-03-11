@@ -1,10 +1,4 @@
 {
-  "id": "stage-01",
-  "name": "Stage 01",
-  "legend": {
-    "#": "floor",
-    ".": "empty"
-  },
   "grid": [
     "..####.",
     ".##..#.",

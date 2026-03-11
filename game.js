@@ -37,7 +37,6 @@ function parseStage(stageData) {
   }
 
   return {
-    id: stageData.id ?? "stage",
     rows,
     cols,
     floorCells,
@@ -219,7 +218,6 @@ async function bootstrap() {
     });
 
     resizeObserver.observe(stageAreaElement);
-    window.addEventListener("resize", renderStage);
   } catch (error) {
     console.error(error);
     stageBoardElement.replaceChildren();
