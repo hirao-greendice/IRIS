@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRIS 作成モード</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="editor-page">
+  <header class="editor-topbar">
+    <div class="editor-topbar__heading">
+      <h1>作成モード</h1>
+      <p>盤面サイズ、ブロック位置、キャラ位置をブラウザ上で仮編集できます。</p>
+    </div>
+    <a class="page-shortcut" href="./index.html">ゲームへ戻る</a>
+  </header>
+
+  <main class="editor-layout">
+    <aside class="editor-sidebar">
+      <section class="editor-panel">
+        <h2>盤面</h2>
+        <div class="editor-fields">
+          <div class="editor-field">
+            <label for="board-width">幅</label>
+            <input id="board-width" type="number" min="1" max="20" value="7">
+          </div>
+          <div class="editor-field">
+            <label for="board-height">高さ</label>
+            <input id="board-height" type="number" min="1" max="20" value="8">
+          </div>
+        </div>
+        <div class="editor-actions">
+          <button id="apply-board-size" class="editor-button">盤面サイズを更新</button>
+          <button id="reset-editor" class="editor-button">初期化</button>
+        </div>
+        <p class="editor-hint">長方形ベースです。必要なら `空白` ツールで穴を開けられます。</p>
+      </section>
+
+      <section class="editor-panel">
+        <h2>配置ツール</h2>
+        <div id="tool-buttons" class="editor-tool-grid">
+          <button class="editor-button is-active" data-tool="block">ブロック</button>
+          <button class="editor-button" data-tool="player">キャラ</button>
+          <button class="editor-button" data-tool="erase">削除</button>
+          <button class="editor-button" data-tool="void">空白</button>
+          <button class="editor-button" data-tool="floor">床</button>
+        </div>
+        <div class="editor-stack" style="margin-top: 14px;">
+          <label for="block-shape">ブロック形</label>
+          <select id="block-shape">
+            <option value="single">1x1</option>
+            <option value="bar-h">2x1</option>
+            <option value="bar-v">1x2</option>
+            <option value="square">2x2</option>
+          </select>
+        </div>
+        <p class="editor-hint">ブロックはクリックで配置、同じ場所のブロックはクリックでも消せます。</p>
+        <div id="editor-status" class="editor-status" aria-live="polite"></div>
+      </section>
+
+      <section class="editor-panel">
+        <h2>テストプレイ</h2>
+        <div class="editor-actions">
+          <button id="start-preview" class="editor-button">テスト開始</button>
+          <button id="stop-preview" class="editor-button">編集に戻る</button>
+          <button id="reset-preview" class="editor-button is-wide">テスト位置をリセット</button>
+        </div>
+        <div class="editor-dpad" aria-label="Move controls">
+          <span class="editor-dpad__spacer" aria-hidden="true"></span>
+          <button class="editor-button editor-button--icon" data-move="up" aria-label="上へ移動">↑</button>
+          <span class="editor-dpad__spacer" aria-hidden="true"></span>
+          <button class="editor-button editor-button--icon" data-move="left" aria-label="左へ移動">←</button>
+          <button class="editor-button editor-button--icon" data-move="down" aria-label="下へ移動">↓</button>
+          <button class="editor-button editor-button--icon" data-move="right" aria-label="右へ移動">→</button>
+        </div>
+        <p class="editor-hint">矢印キー / WASD でも移動できます。テスト中は元の配置データは保持されます。</p>
+        <div id="editor-mode" class="editor-mode">モード: 編集中</div>
+      </section>
+    </aside>
+
+    <section class="editor-canvas">
+      <section class="editor-panel">
+        <h2>プレビュー</h2>
+        <div class="editor-board-shell">
+          <div id="editor-board" class="editor-board" aria-label="Stage editor board"></div>
+        </div>
+        <div class="editor-meta">
+          <span id="floor-count">床: 0</span>
+          <span id="block-count">ブロック: 0</span>
+          <span id="player-position">キャラ: 未配置</span>
+        </div>
+      </section>
+
+      <section class="editor-panel">
+        <h2>JSON 出力</h2>
+        <div class="editor-actions">
+          <button id="copy-json" class="editor-button">JSONをコピー</button>
+          <button id="clear-storage" class="editor-button">保存状態を消す</button>
+        </div>
+        <div class="editor-stack" style="margin-top: 14px;">
+          <label for="json-output">現在の内容</label>
+          <textarea id="json-output" class="editor-output" readonly></textarea>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script type="module" src="editor.js"></script>
+</body>
+</html>
